@@ -7,3 +7,5 @@ scikit-learn==1.2.2
 xgboost==1.7.4
 plotly==5.14.1
 scipy==1.10.0
+setuptools>=58.0.4
+
