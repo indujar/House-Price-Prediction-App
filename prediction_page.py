@@ -293,11 +293,11 @@ how well the model explains the variance in the sale prices.
         sorted_importances = feature_importances[sorted_indices]
 
         # Plot feature importance
-        st.write(f"### Top 20 Feature Importances for {best_model_name}")
-        st.write("The bar chart below shows the top 20 features that contributed most to the model's predictions.")
+        st.write(f"### Top 10 Feature Importances for {best_model_name}")
+        st.write("The bar chart below shows the top 10 features that contributed most to the model's predictions.")
         fig, ax = plt.subplots(figsize=(10, 6))
-        sns.barplot(x=sorted_importances[:20], y=sorted_features[:20], palette='Oranges_d', ax=ax)
-        ax.set_title(f"Top 20 Feature Importances for {best_model_name}")
+        sns.barplot(x=sorted_importances[:10], y=sorted_features[:10], palette='Oranges_d', ax=ax)
+        ax.set_title(f"Top 10 Feature Importances for {best_model_name}")
         st.pyplot(fig)
         st.write("""
 ### Understanding Feature Importance
@@ -334,9 +334,9 @@ When assessing or predicting property values, prioritize the overall quality rat
         }
     elif best_model_name == "XGBoost":
         param_grid = {
-            'n_estimators': [100, 200, 500],
-            'learning_rate': [0.01, 0.1, 0.3],
-            'max_depth': [3, 4, 5]
+            'n_estimators': [100, 200],
+            'learning_rate': [0.01, 0.1],
+            'max_depth': [3, 4]
         }
     elif best_model_name == "Decision Tree Regressor":
         param_grid = {
