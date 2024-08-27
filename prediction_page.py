@@ -13,6 +13,9 @@ from sklearn.tree import DecisionTreeRegressor
 from xgboost import XGBRegressor
 from sklearn.impute import SimpleImputer
 
+# Set a consistent random seed for reproducibility
+np.random.seed(42)
+
 # Function to clean data (based on EDA cleaning)
 def clean_data(df):
     # Drop columns with >80% missing values
