@@ -7,6 +7,16 @@ import plotly.express as px
 # Set page configuration
 st.set_page_config(page_title="House Price Prediction App", layout="wide")
 
+#  Add a Welcome Banner
+st.markdown(
+    """
+    <div style="background-color:#4CAF50;padding:10px;border-radius:10px">
+    <h2 style="color:white;text-align:center;">Welcome to the House Price Prediction App</h2>
+    <p style="color:white;text-align:center;">Analyze, Explore, and Predict House Prices with Ease</p>
+    </div>
+    """, unsafe_allow_html=True
+)
+
 # Sidebar for theme selection
 theme_choice = st.sidebar.radio("Choose Theme", ["Dark", "Light"])
 
@@ -82,20 +92,31 @@ else:
         unsafe_allow_html=True
     )
 
-# Sidebar for navigation
+#  Add Icons for Navigation
 st.sidebar.title("Navigation")
-page = st.sidebar.selectbox("Choose a page", ["About", "Prediction", "EDA"])
+page = st.sidebar.selectbox("Choose a page", ["🏠 About", "📊 Prediction", "🔍 EDA"])
 
-# Upload files
+# 3. Include Tooltips for User Guidance
 st.sidebar.header("Upload Data")
 st.sidebar.write("Upload training and test data to predict house prices")
-train_file = st.sidebar.file_uploader("Upload Training Data", type=["csv"], help="Upload the CSV file that contains your training data.")
-test_file = st.sidebar.file_uploader("Upload Test Data", type=["csv"], help="Upload the CSV file that contains your test data.")
+train_file = st.sidebar.file_uploader(
+    "Upload Training Data", 
+    type=["csv"], 
+    help="Upload the CSV file that contains your training data. Ensure the data follows the expected format."
+)
+test_file = st.sidebar.file_uploader(
+    "Upload Test Data", 
+    type=["csv"], 
+    help="Upload the CSV file that contains your test data. Ensure the data follows the expected format."
+)
 
 # Check if files are uploaded
 if train_file is not None and test_file is not None:
-    df_train = pd.read_csv(train_file)
-    df_test = pd.read_csv(test_file)
+    # 4. Include a Progress Indicator
+    with st.spinner('Loading data...'):
+        df_train = pd.read_csv(train_file)
+        df_test = pd.read_csv(test_file)
+    st.success('Data loaded successfully!')
     
     st.session_state["df_train"] = df_train
     st.session_state["df_test"] = df_test
@@ -104,11 +125,8 @@ else:
     df_train = df_test = None
     data_loaded = False
 
-# Tabs for navigation
-tab1, tab2, tab3 = st.tabs(["About", "Prediction", "EDA"])
-
-# About page content
-with tab1:
+# Navigation based on the sidebar selection
+if page == "🏠 About":
     st.title("About This App")
     st.write("""
     This app is designed to predict house prices based on various features such as size, location, and quality.
@@ -135,6 +153,12 @@ with tab1:
     - **GrLivArea:** Above grade (ground) living area square feet.
     - **GarageCars:** Size of garage in car capacity.
     - **TotalBsmtSF:** Total square feet of basement area.
+    """)
+
+    st.subheader("Getting the Dataset")
+    st.write("""
+    The datasets required for this app are available on [GitHub](https://github.com/indujar/House-Price-Prediction-App.git). 
+    Please download them and upload the training and test datasets to use the prediction and EDA features.
     """)
 
     if st.checkbox("Show all data fields"):
@@ -222,18 +246,66 @@ with tab1:
         - **SaleCondition:** Condition of sale.
         """)
 
-
-# Prediction page content
-with tab2:
+elif page == "📊 Prediction":
     if df_train is not None and df_test is not None:
         prediction_page(df_train, df_test)
     else:
         st.warning("Please upload both the training and test datasets to access the Prediction page.")
 
-# EDA page content
-with tab3:
+elif page == "🔍 EDA":
     if df_train is not None and df_test is not None:
         eda_page(df_train, df_test)
     else:
         st.warning("Please upload both the training and test datasets to access the EDA page.")
+
+# Add a FAQ Section
+with st.expander("Frequently Asked Questions (FAQ)"):
+    st.write("""
+    **Q1: What data format is required for upload?**
+    A1: Please upload CSV files following the format specified in the 'Getting the Dataset' section.
+
+    **Q2: What models are used for prediction?**
+    A2: The app employs several machine learning models including Random Forest, XGBoost, and Ridge Regression.
+
+    **Q3: Can I use my own dataset?**
+    A3: Yes, you can use your own dataset as long as it has the same columns as specified in the 'Getting the Dataset' section. If the columns are different, the code will not work correctly.
+
+    **Q4: What should I do if my dataset has different columns?**
+    A4: If your dataset has different columns, you will need to modify the code to handle those differences. Ensure that the column names and data types match the expected format for the prediction models to function correctly.
+
+    **Q5: Is there a limit on the size of the dataset that can be uploaded?**
+    A5: There is no strict limit, but very large datasets may slow down the app or cause it to time out, especially on free hosting services. It’s recommended to use datasets of manageable size for better performance.
+
+    **Q6: How is the data processed once uploaded?**
+    A6: Once the datasets are uploaded, the app performs data cleaning, including handling missing values and removing outliers. It then prepares the data for prediction by applying necessary transformations such as encoding categorical variables.
+
+    **Q7: Can I visualize my dataset in the app?**
+    A7: Yes, after uploading your dataset, you can explore it using the EDA (Exploratory Data Analysis) section, which provides various visualizations and statistical summaries.
+
+    **Q8: What if I encounter an error during prediction?**
+    A8: If you encounter an error, first ensure that your dataset matches the expected format. If the issue persists, you may need to check the data types and column names. The error messages should help identify the specific problem.
+
+    **Q9: How are outliers handled in the dataset?**
+    A9: The app uses a combination of IQR (Interquartile Range) and Z-score methods to identify and remove outliers, ensuring that the predictions are not skewed by extreme values.
+
+    **Q10: What are the key features used for predicting house prices?**
+    A10: Key features include Overall Quality (OverallQual), Living Area (GrLivArea), Garage Capacity (GarageCars), and Year Built (YearBuilt), among others. These features are used by the models to make accurate predictions.
+    """)
+
+# User Feedback and Analytics
+st.subheader("Feedback")
+feedback = st.text_area("Provide your feedback", placeholder="Let us know what you think!")
+if st.button("Submit Feedback"):
+    st.success("Thank you for your feedback!")
+
+# Add a Footer with Contact Information
+st.markdown(
+    """
+    <hr style="margin:20px 0;">
+    <div style="text-align:center;">
+    <p>Developed by [Induja]. For more information, visit the <a href="https://github.com/indujar/House-Price-Prediction-App.git">GitHub repository</a>.</p>
+    </div>
+    """, unsafe_allow_html=True
+)
+
 
