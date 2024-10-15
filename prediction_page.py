@@ -329,10 +329,10 @@ def prediction_page(df_train, df_test):
     # Plot feature importance for the best model
     if hasattr(best_model, 'feature_importances_'):
         st.write("### Feature Importances for the Best Model")
-        st.write("The plot below shows the top 20 most important features in the best model. These features have the most influence on predicting house prices.")
+        st.write("The plot below shows the top 6 most important features in the best model. These features have the most influence on predicting house prices.")
         feature_importances = best_model.feature_importances_
         sorted_indices = np.argsort(feature_importances)[::-1]
-        top_n = min(20, len(sorted_indices))  # Ensure we don't exceed the number of available features
+        top_n = min(20, len(sorted_indices))  
         top_features = [df_final.columns[i] for i in sorted_indices[:top_n]]
         top_importances = feature_importances[sorted_indices[:top_n]]
 
